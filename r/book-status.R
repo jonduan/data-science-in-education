@@ -8,7 +8,8 @@ library(wordcountaddin)
 tibble(file = list.files()) %>% 
     filter(str_detect(file, ".Rmd")) %>% 
     mutate(file = as.character(file)) %>% 
-    mutate(wordcount = map_int(unlist(.), word_count))
+    mutate(wordcount = map_int(unlist(.), word_count),
+           remains = 5000-wordcount)
 
 tibble(file = list.files()) %>% 
     filter(str_detect(file, ".Rmd")) %>% 
