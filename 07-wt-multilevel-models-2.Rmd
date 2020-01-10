@@ -124,7 +124,7 @@ function.
 
 ```{r}
 dat %>% 
-  count(course_id) %>% 
+  dplyr::count(course_id) %>% 
   nrow()
 ```
 
