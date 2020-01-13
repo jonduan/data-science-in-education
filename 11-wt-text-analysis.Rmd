@@ -337,10 +337,6 @@ tweets %>%
   slice(1, 3)
 ```
 
-<<<<<<< HEAD:10-wt-text-analysis.Rmd
-
-=======
->>>>>>> ced8bac42cf161b926990817bff4b1db792c602f:11-wt-text-analysis.Rmd
 Randomly selecting rows from a dataset is great technique to have in your toolkit. Random selection helps us avoid some of the biases we all have when we pick rows to review ourselves. 
 
 Here's one way to do that using base R: 
