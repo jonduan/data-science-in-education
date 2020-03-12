@@ -1,12 +1,25 @@
+
 # Walkthrough 3: Introduction to Aggregate Data {#c09}
 
-## Introduction
+## Vocabulary
+
+* aggregate data
+* disaggregated data
+* data frame
+* Free/Reduced Price Lunch (FRPL)
+* histogram
+* lists
+* subgroup
+* trim
+* weighted average
+
+## Chapter Overview
 
 ### Background
 
-A common situation encountered when using data for analyzing the education sector, particularly by analysts who are not directly working with schools or districts, is the prevalence of publicly available, aggregate data. Aggregate data refers to numerical or non-numerical information that is (1) collected from multiple sources and/or on multiple measures, variables, or individuals and (2) compiled into data summaries or summary reports, typically for the purposes of public reporting or statistical analysis [@greatschools2014]. Example of publicly available aggregate data include school-level graduation rates, state test proficiency scores by grade and subject, or averaged survey responses.
+A common situation encountered when searching for education data, particularly by analysts who are not directly working with schools or districts, is the prevalence of publicly available, aggregate data. Aggregate data refers to numerical or non-numerical information that is (1) collected from multiple sources and/or on multiple measures, variables, or individuals and (2) compiled into data summaries or summary reports, typically for the purposes of public reporting or statistical analysis [@greatschools2014]. Example of publicly available aggregate data include school-level graduation rates, state test proficiency scores by grade and subject, or mean survey responses.
 
-Aggregated datasets are essential both for accountability purposes and for providing useful information about schools and districts to those who are monitoring them. For example, district administrators might aggregate row-level (also known as individual-level or student-level) enrollment reports over time. This allows them to see how many students enroll in each school, in the district overall, and any grade-level variation. Depending on their state, the district administrator might submit these aggregate data to their state education agency for reporting purposes. These datasets might be posted on the state's department of education website for anybody to download and use.
+Aggregated data are essential both for accountability purposes and for providing useful information about schools and districts to those who are monitoring them. For example, district administrators might aggregate row-level (also known as individual-level or student-level) enrollment reports over time. This allows them to see how many students enroll in each school, in the district overall, and any grade-level variation. Depending on their state, the district administrator might submit these aggregate data to their state education agency for reporting purposes. These datasets might be posted on the state's department of education website for anybody to download and use.
 
 Federal and international education datasets provide additional context for evaluating education systems. In the US, some federal datasets aim to consolidate important metrics from all states. This can be quite useful because each state has its own repository of data and to go through each state to download a particular metric is a significant effort. The federal government also funds assessments and surveys which are disseminated to the public. However, the federal datasets often have more stringent data requirements than the states, so the datasets may be less usable. 
 
@@ -16,7 +29,7 @@ Analysis of aggregate data can help us identify patterns that may not have previ
 
 #### Disaggregating Aggregated Data
 
-Aggregated data can tell us many things, but in order for us to examine subgroups and their information, we must have data _disaggregated_ by the subgroups we hope to analyze. This data is still aggregated from row-level data but provides data on smaller components than the grand total. Common disaggregations for students include gender, race/ethnicity, socioeconomic status, English learner designation, and whether they are served under the Individuals with Disabilities Education Act (IDEA).
+Aggregated data can tell us many things, but in order for us to examine subgroups and their information, we must have data _disaggregated_ by the subgroups we hope to analyze. This data is still aggregated from row-level data but provides information on smaller components than the grand total [@disaggregate]. Common disaggregations for students include gender, race/ethnicity, socioeconomic status, English learner designation, and whether they are served under the Individuals with Disabilities Education Act (IDEA).
 
 #### Disaggregating Data and Equity
 
@@ -34,11 +47,11 @@ On the federal level, examples include:
 
 - [Civil Rights Data Collection (CRDC)](https://www2.ed.gov/about/offices/list/ocr/data.html), which reports many different variables on educational program and services disaggregated by race/ethnicity, sex, limited English proficiency, and disability. These data are school-level.
 
-- [Common Core of Data (CCD)](https://nces.ed.gov/ccd/), which is the US Department of Education's primary database on public elementary and secondary education.
+- [Common Core of Data (CCD)](https://nces.ed.gov/ccd/), which is the U.S. Department of Education's primary database on public elementary and secondary education.
 
 - [EdFacts](https://www2.ed.gov/about/inits/ed/edfacts/data-files/index.html), which includes state assessments and adjusted cohort graduation rates. These data are school- and district-level.
 
-- [Integrated Postsecondary Education Data System (IPEDS)](https://nces.ed.gov/ipeds/), which is the US Department of Education's primary database on postsecondary education.
+- [Integrated Postsecondary Education Data System (IPEDS)](https://nces.ed.gov/ipeds/), which is the U.S. Department of Education's primary database on postsecondary education.
 
 - [National Assessment for Educational Progress (NAEP) Data](https://nces.ed.gov/nationsreportcard/researchcenter/datatools.aspx), an assessment of educational progress in the United States. Often called the "nation's report card." The NAEP reading and mathematics assessments are administered to a representative sample of fourth- and eighth-grade students in each state every two years.
 
@@ -54,7 +67,7 @@ For the purposes of this walkthrough, we will be looking at a particular school 
 
 ### Methods
 
-In this chapter, we will walk through how running analyses on a publicly available dataset can help education data practitioners understand the landscape of needs and opportunities in the field of education. As opposed to causal analysis, which aims to assess the root cause of an phenomenon or the effects of an intervention, we use analysis on an aggregate dataset to find out whether there _is_ a phenomenon, _what_ it is, and _what_ we'd be trying to solve through interventions.
+In this chapter, we will walk through how running analyses on a publicly available dataset can help education data practitioners understand the landscape of needs and opportunities in the field of education. As opposed to causal analysis, which aims to assess the root cause of an phenomenon or the effects of an intervention, we use analysis on an aggregate dataset to find out whether there _is_ a phenomenon, _what_ it is, and _what_ we'd be trying to solve through interventions [@descriptive].
 
 ## Load Packages
 
@@ -63,11 +76,12 @@ As usual, we begin our code by calling the libraries we will use.
 
 ```r
 library(tidyverse)
+library(here)
 library(janitor)
 library(dataedu)
 ```
 
-ROpenSci created the [{tabulizer} package](https://github.com/ropensci/tabulizer) which provides R bindings to the Tabula java library, which can be used to computationaly extract tables from PDF documents. {RJava} is a required package to load {tabulizer}. Unfortunately, installing {RJava} on Macs can be very tedious. If you find yourself unable to install {tabulizer}, or would like to skip to the data processing, the data pulled from the PDFs is also saved so we can skip the steps requiring {RJava}.
+ROpenSci created the [{tabulizer}](https://github.com/ropensci/tabulizer) package which provides R bindings to the Tabula java library, which can be used to computationally extract tables from PDF documents. {RJava} is a required package to load {tabulizer}. Unfortunately, installing {RJava} on Macs can be very tedious. If you find yourself unable to install {tabulizer} [@R-tabulizer], or would like to skip to the data processing, the data pulled from the PDFs is available in the {dataedu} package. You can decide whether to skip the steps requiring {RJava} [@R-RJava].
 
 
 ```r
@@ -86,7 +100,7 @@ race_pdf <-
 
 # if reading in the tabulizer output
 race_pdf <-
-  readRDS(here::here("data", "wt05_agg_data", "race_pdf.Rds"))
+  readRDS(here("data", "wt05_agg_data", "race_pdf.Rds"))
 ```
 
 It is important to consistently check what we're doing with the actual PDF's to ensure we're getting the data that we need. 
@@ -165,7 +179,7 @@ race_clean <-
 
 We will import the Free Reduced Price Lunch (FRPL) PDF's now.
 
-> FRPL stands for Free/Reduced Price Lunch, [often used as a proxy for poverty]((https://nces.ed.gov/blogs/nces/post/free-or-reduced-price-lunch-a-proxy-for-poverty). Students from a household with an income up to 185 percent of the poverty threshold are eligible for free or reduced price lunch. (Sidenote: Definitions are very important in disaggregated data. FRPL is used because it’s ubiquitous and reporting is mandated but there is debate as to whether it actually reflects the level of poverty among students.)
+> FRPL stands for Free/Reduced Price Lunch, often used as a proxy for poverty [@frpl]. Students from a household with an income up to 185 percent of the poverty threshold are eligible for free or reduced price lunch. (Sidenote: Definitions are very important in disaggregated data. FRPL is used because it’s ubiquitous and reporting is mandated but there is debate as to whether it actually reflects the level of poverty among students.)
 
 
 ```r
@@ -175,7 +189,7 @@ frpl_pdf <-
 
 # if reading in the tabulizer output
 race_pdf <-
-  readRDS(here::here("data", "wt05_agg_data", "race_pdf.Rds"))
+  readRDS(here("data", "wt05_agg_data", "race_pdf.Rds"))
 ```
 
 Similar to the Race/Ethnicity PDF, there are rows that we don't need from each page, which we remove using `slice()`.
@@ -202,7 +216,7 @@ frpl_df <-
   )
 ```
 
-To clean it up, we remove the rows that are blank. When looking at the PDF, we notice that there are aggregations inserted into the table that are not district-level. For example, they have included ELM K_08, presumably to aggregate FRPL numbers up to the K-8 level. Although this is useful data, we don't need it for this district-level analysis. There are different ways we can remove these rows but we will just filter them out.
+To clean it up, we remove the rows that are blank. When looking at the PDF, we notice that there are aggregations inserted into the table that are not district-level. For example, they have included `ELM K_08`, presumably to aggregate FRPL numbers up to the K-8 level. Although this is useful data, we don't need it for this district-level analysis. There are different ways we can remove these rows but we will just filter them out.
 
 
 ```r
@@ -243,7 +257,7 @@ joined_df <-
 
 Now we move on to the fun part of creating new columns based on the merged dataset. 
 
-1. We want to calculate, for each race, the number of students in 'high poverty' schools. This is defined by NCES as schools that are over 75% FRPL. When a school has over 75% FRPL, we count the number of students for that particular race under the variable `[racename]_povnum`.
+1. We want to calculate, for each race, the number of students in 'high poverty' schools. This is defined by NCES as schools that are over 75% FRPL @ncesfrpl. When a school has over 75% FRPL, we count the number of students for that particular race under the variable `[racename]_povnum`.
 2. The {janitor} package has a handy `adorn_totals()` function that sums the columns for you. This is important because we want a weighted average of students in each category, so we need the total number of students in each group.
 3. We create the weighted average of the percentage of each race by dividing the number of students by race by the total number of students.
 4. To get FRPL percentage for all schools, we have to recalculate `frpl_pct.`
@@ -279,7 +293,7 @@ merged_df <-
   )
 ```
 
-To facilitate the creation of ggplots later on, we put this data in tidy format.
+To facilitate the creation of plots later on, we put this data in tidy format.
 
 
 ```r
@@ -295,10 +309,10 @@ Running the above code, particularly the download of the PDFs, takes a lot of ti
 
 ```r
 tidy_df <-
-  read_csv(here::here("data", "wt05_agg_data", "wt05_aggdat_tidy_dat.csv"))
+  read_csv(here("data", "wt05_agg_data", "wt05_aggdat_tidy_dat.csv"))
 
 merged_df <-
-  read_csv(here::here("data", "wt05_agg_data", "wt05_aggdat_merged_dat.csv"))
+  read_csv(here("data", "wt05_agg_data", "wt05_aggdat_merged_dat.csv"))
 ```
 
 ## View Data
@@ -310,7 +324,7 @@ What do the racial demographics in this district look like? For this, a barplot 
 
 ```r
 tidy_df %>%
-  # filter out Total rows, since we want district-level information
+  # filter for Total rows, since we want district-level information
   filter(school_name == "Total",
          str_detect(category, "pct"),
          category != "frpl_pct") %>%
@@ -328,13 +342,13 @@ tidy_df %>%
       "na_pct" = "Native Am."
     )
   ) +
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent) + # makes labels present as percentages
   scale_fill_dataedu() +
-  theme_dataedu() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  theme_dataedu()
 ```
 
-<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" />
+<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" />
 
 When we look at these data, the district looks very diverse. Almost **40% of students are Black** and around **36% are White.**
 
@@ -347,44 +361,42 @@ In terms of free/reduced price lunch, we have that calculated under `frpl_pct`:
 tidy_df %>%
   filter(category == "frpl_pct",
          school_name == "Total") %>%
-  knitr::kable()
+  knitr::kable() # creates a nice looking table
 ```
 
 
 
-school_name   category        value
-------------  ---------  ----------
-Total         frpl_pct    0.5685631
+school_name   category    value
+------------  ---------  ------
+Total         frpl_pct    0.569
 
-**56.9% of the students are eligible for FRPL**, compared to [the US average of 52.1%.](https://nces.ed.gov/programs/digest/d17/tables/dt17_204.10.asp?current=yes)
+**56.9% of the students are eligible for FRPL**, compared to [the U.S. average of 52.1%.](https://nces.ed.gov/programs/digest/d17/tables/dt17_204.10.asp?current=yes)
 
 > This also matches the PDF's. Great!
 
 Now, we dig deeper to see if there is more to the story.
 
-### Anayzing Spread
+### Analyzing Spread
 
 Another view of the data can be visualizing the distribution of students with different demographics across schools. Here is a histogram for the percentage of White students within the schools for which we have data.
 
 
 ```r
 merged_df %>%
+  # remove district totals
   filter(school_name != "Total") %>%
+  # x-axis will be the percentage of white students within schools
   ggplot(aes(x = wh_pct)) +
   geom_histogram(breaks = seq(0, 1, by = .1),
-                 fill = dataedu_cols("darkblue"))  +
+                 fill = dataedu_colors("darkblue"))  +
   xlab("White Percentage") +
   ylab("Count") +
-  scale_x_continuous(labels = scales::percent) +
+  scale_x_continuous(labels = scales::percent) + 
   theme(legend.position = "none") +
   theme_dataedu()
 ```
 
-<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
-
-```r
-# hist(merged_df$wh_pct)$counts[1:9] # counting number of schools in the first bin (0-10%)
-```
+<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" />
 
 **26 of the 74 (35%) of schools have between 0-10% White students.** This implies that even though the school district may be diverse, the demographics are not evenly distributed across the schools. More than half of schools enroll fewer than 30% of White students even though White students make up 35% of the district student population.
 
@@ -394,7 +406,7 @@ The school race demographics are not representative of the district populations 
 
 ### Creating Categories
 
-High-poverty schools are defined as public schools where more than 75% of the students are eligible for FRPL. According to NCES, [24% of public school students attended high-poverty schools.](https://nces.ed.gov/fastfacts/display.asp?id=898) However, different subgroups were overrepresented and underrepresented within the high poverty schools. Is this the case for this district?
+High-poverty schools are defined as public schools where more than 75% of the students are eligible for FRPL. According to NCES, 24% of public school students attended high-poverty schools @ncesfrpl. However, different subgroups were overrepresented and underrepresented within the high poverty schools. Is this the case for this district?
 
 
 ```r
@@ -403,7 +415,6 @@ tidy_df %>%
          str_detect(category, "povsch")) %>%
   ggplot(aes(x = reorder(category,-value), y = value)) +
   geom_bar(stat = "identity", aes(fill = factor(category))) +
-  theme_dataedu() +
   xlab("Subgroup") +
   ylab("Percentage in High Poverty Schools") +
   scale_x_discrete(
@@ -416,12 +427,12 @@ tidy_df %>%
     )
   ) +
   scale_y_continuous(labels = scales::percent) +
-  theme_dataedu() +
   scale_fill_dataedu() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  theme_dataedu()
 ```
 
-<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
+<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" />
 
 **8% of White students** attend high poverty schools, compared to **43% of Black students, 39% of Hispanic students, 28% of Asian students, and 45% of Native American students.** We can conclude these students are disproportionally attending high poverty schools.
 
@@ -434,16 +445,16 @@ Let’s explore what happens when we correlate race and FRPL percentage by schoo
 merged_df %>%
   filter(school_name != "Total") %>%
   ggplot(aes(x = wh_pct, y = frpl_pct)) +
-  geom_point(color = dataedu_cols("green")) +
-  theme_dataedu() +
+  geom_point(color = dataedu_colors("green")) +
   xlab("White Percentage") +
   ylab("FRPL Percentage") +
   scale_y_continuous(labels = scales::percent) +
   scale_x_continuous(labels = scales::percent) +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  theme_dataedu()
 ```
 
-<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
+<img src="09-wt-aggregate-data_files/figure-html/unnamed-chunk-18-1.png" width="100%" style="display: block; margin: auto;" />
 
 Related to the result above, there is a strong negative correlation between FRPL percentage and the percentage of White students in a school. That is, high poverty schools have a lower percentage of White students and low poverty schools have a higher percentage of White students.
 
@@ -453,16 +464,8 @@ Because of the disaggregated data this district provides, we can go deeper than 
 
 ## Conclusion
 
-According to the Urban Institute, the disproportionate percentage of students of color attending high poverty schools "is a defining feature of almost all Midwestern and northeastern metropolitan school systems." Among other issues, [high poverty schools tend to lack the educational resources—like highly qualified and experienced teachers, low student-teacher ratios, college prerequisite and advanced placement courses, and extracurricular activities—available in low-poverty schools.](https://www.urban.org/urban-wire/high-poverty-schools-undermine-education-children-color) This has a huge impact on these students and their futures.
+According to the Urban Institute, the disproportionate percentage of students of color attending high poverty schools "is a defining feature of almost all Midwestern and northeastern metropolitan school systems" @urbanpov. Among other issues, "high poverty schools tend to lack the educational resources—like highly qualified and experienced teachers, low student-teacher ratios, college prerequisite and advanced placement courses, and extracurricular activities—available in low-poverty schools." This has a huge impact on these students and their futures.
 
 In addition, research shows that racial and socioeconomic diversity in schools can provide students with a range of cognitive and social benefits. Therefore, this deep segregation that exists in the district can have adverse effects on students.
 
-As an education data practicioner, we can use these data to suggest interventions for what we can do to improve equity in the district. In addition, we can advocate for more datasets such as these, which allow us to dig deep.
-
-## References
-
-Loeb, S., Dynarski, S., McFarland, D., Morris, P., Reardon, S., & Reber, S. (2017). [Descriptive analysis in education: A guide for researchers.](https://ies.ed.gov/ncee/pubs/20174023/pdf/20174023.pdf) (NCEE 2017–4023). Washington, DC: U.S. Department
-of Education, Institute of Education Sciences, National Center for Education Evaluation and Regional Assistance. 
-
-National Forum on Education Statistics. (2016). [Forum Guide to Collecting and Using Disaggregated Data on Racial/Ethnic
-Subgroups.](https://nces.ed.gov/pubs2017/NFES2017017.pdf) (NFES 2017-017). U.S. Department of Education. Washington, DC: National Center for Education Statistics.
+As a data scientist in education, we can use these data to suggest interventions for what we can do to improve equity in the district. In addition, we can advocate for more datasets such as these, which allow us to dig deep.
