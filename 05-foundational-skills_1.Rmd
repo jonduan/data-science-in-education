@@ -1,21 +1,18 @@
 # Getting Started with R and RStudio {#c05}
 
-## Chapter overview
+## Chapter Overview
 
-This chapter is designed to take you from installing R and RStudio all the way through the very basics of data loading and manipulation using the `tidyverse` [@R-tidyverse]. 
+This chapter is designed to take you from installing R and RStudio all the way through the very basics of data loading and manipulation using the {tidyverse} [@wickham2019]. 
 
 We will be covering the following topics in this chapter: 
 
 - Installing R and RStudio
 - RStudio environment and pane layout
 - Basics of customizing your RStudio environment
-- Introduction to help documentation
 - Steps for working through new and unfamiliar content
-- Downloading and accessing the data sets used in this book
+- Accessing the data sets used in this book
 
-## Getting Started
-
-First, you will need to download the latest versions of R and RStudio. 
+First, you will need to download the latest versions of R [@rcoreteam] and RStudio [@rstudio]. 
 R is a free environment for statistical computing and graphics using the programming language R. 
 RStudio is a set of integrated tools that allows for a more user-friendly experience for using R.
 
@@ -44,17 +41,21 @@ If you do have issues, consider this [page](https://datacarpentry.org/R-ecology-
 Another excellent place to get help is the [RStudio Community](https://community.rstudio.com/).
 
 ## Getting to know R through RStudio
+
 Now that we've installed both R and RStudio, we will be accessing R _through_ RStudio. 
 One of the most reliable ways to tell if you're opening R or RStudio is to look at the icons: 
 
-[IMG]
+<center>
+![](./man/figures/icons.png)
+</center>
 
 RStudio is an **I**ntegrated **D**evelopment **E**nvironment (IDE), and comes with built-in features that make using R a little easier. 
-If you'd like more information on the difference between R and RStudio, we recommend the **Getting Started** section of the [Modern Dive](https://moderndive.com/1-getting-started.html#) textbook.
-
+If you'd like more information on the difference between R and RStudio, we recommend the **Getting Started** section of the [Modern Dive](https://moderndive.com/1-getting-started.html#) @statisticalinf textbook.
 
 You do not _have_ to use RStudio to access R, and many people don't! 
+
 Other IDEs that work with R include:
+
 - [Jupyter notebook](https://jupyter.org/)
 - [VisualStudio](https://visualstudio.microsoft.com/services/visual-studio-online/)
 - [VIM](https://github.com/jalvesaq/Nvim-R)
@@ -82,87 +83,66 @@ It is generally better to type code in an `R script`, which saves as an `.R` fil
 This is because anything you type in the console will be lost as soon as you close R, whereas you can save everything in an `.R` script and see/use it again later.  
 
 **Running code in an R Script**  
+
 There are several ways to run code in an R script:  
 
 - Highlight the line(s) of code you'd like to run and press **Ctrl + Enter**  
 - Highlight the line(s) of code you'd like to run and click the **Run** button in the `R script` pane  
 - To run _every_ line of code in your file you can press **Ctrl + Shift + Enter**  
 
+**Creating and running code in an R Markdown file**
+
+R Markdown is a highly convenient way to communicate and share results. Navigate to "New File" and then "R Markdown".
+
+Then, click "Knit to PDF", "Knit to HTML", or "Knit to Word".
+
 **Changing your RStudio theme**  
 
 - Explore the various themes available to you in RStudio by going to _Tools -> Global Options -> Appearance_
     + Choose a theme that works best for you and apply it
+    
+## Steps for working through new and unfamiliar content
 
-## Diving a little deeper into R with `swirl`
+## Using the dataedu package to access the data used in this book
 
-If you're eager to get started exploring everything that R can do, we recommend installing and learning through [`swirl`](https://swirlstats.com/students.html). 
-`swirl` is set of packages (more on those shortly!) that you can download, providing an interactive method for learning R by using R.
+We created the {dataedu} package to provide our readers an opportunity to jump into R however they see fit.
 
-We are not affiliated with `swirl` in any way, nor is it required to progress through this text.   
+We describe how to install the package in the next chapter. The package serves four functions:
 
-## Introduction to Help Documentation
-Very few - if any - people in the world know everything there is to know about R.
-This means that we all need to look things up, sometimes every few minutes!
-Thankfully there are some excellent built-in resources that we can leverage as we use R. 
+1. Mass installation of all the packages used in the book
+2. Reproducible code for the walkthroughs
+3. Access to the data used in each of the walkthroughs
 
-From within RStudio we can access the `Help` documentation by using `?` or `??` in the console.
-For example, if I wanted to look up information on the `data()` function, I can type `?data` or `data()` next to the carat `>` in the Console and hit `Enter`. 
-You should see the `Help` panel on the bottom right side of your RStudio environment populate with documentation on the `data()` function. 
+### Mass Installation of Packages
 
-This works because the `data()` function is part of something called **base R** - that is, all of the functions included with R when you first install it. 
-As you use R throughout this book, we'll be asking you to install additional packages.
-These packages extend the functionality of base R by providing us with access to new functions. 
-This means that instead of writing a function to do a common data analysis task, such as creating a new variable out of existing variables, someone has written that function and made it available for you to use at no charge. 
+We strived to use packages that we use in our daily work when creating the walkthroughs in the book. Because we covered a variety of subjects, that means we used a lot of packages! As described in the Foundational Skills chapter, you can install the packages individually as they suit your needs. 
 
-One of the functions that can accomplish this task is called `mutate()`. 
-What happens when you type `?mutate` (or `mutate()`) into the Console and hit `Enter`?  
+However, if you want to quickly get started and download all the packages at once, please use `install_dataedu()`.
 
-We've gotten one of our first error messages!  
-
-[IMG of error message - pending RStudio bug fix]
-
-This is a fantastic error message because not only has it told us that something is wrong (there is no documentation for `mutate`), it tells us what we should try to do to solve the error. 
-Let's see what happens when we follow the error message instructions by typing `??mutate` (or `??mutate()`) into the Console and hitting `Enter`. 
-What happens?
-
-## Downloading and accessing the data sets used in this book
-
-Throughout this book you'll see data accessed in a multitude of ways.
-Sometimes we've pulled the data directly from a website, while other times we ask you to load the data from a `.csv` or `.xls` file.
-We've also provided each of the datasets used in this book as `.rda` files that are accessible via the `dataedu` package.
-More details about the `dataedu` package on be found [on GitHub](https://github.com/data-edu/dataedu), however we'll walk through the basic steps here as well.
-
-As of this writing, the `dataedu` package is not available on CRAN. 
-This means we'll have to install the package using `devtools`. 
-To do this you first have to install the `devtools` package, and then the `dataedu` package by running the following code either in your RStudio console or in a script (an .R file): 
-
-```{r}
-# install devtools
-install.packages("devtools")
-
-# install the dataedu package
-devtools::install_github("data-edu/dataedu")
+``` r
+dataedu::install_dataedu()
 ```
 
-From here we can load the `dataedu` package using the `library()` call, as follows:
+To see the packages used in the book, run:
 
 ```{r}
-# load the dataedu package into our R environment
-library(dataedu)
+dataedu::dataedu_packages
 ```
 
-Once you've installed the `dataedu` package, you can use the `mass_install()` function to download all of the packages we'll be using in this text. 
-This step is optional, and you're welcome to install packages as you use them. 
+**A special note on {tabulizer}:** One of the walkthroughs uses [tabulizer](https://github.com/ropensci/tabulizer), created by ROpenSci to read PDFs. {tabulizer} requires the installation of [RJava](https://cran.r-project.org/web/packages/rJava/index.html), which can be a tricky process on Mac computers. {tabulizer} is not included in `mass_install()` and we recommend reading through the notes on its Github repo if installing.
 
-To install all of the packages used in this text, run the following code in your RStudio console:
+### Reproducible Code for Walkthroughs
 
-```{r}
-# see which packages are used in the Data Science in Education Using R text
-dataedu::all_packages
+<!-- Need to add -->
 
-# install all of the packages used in the Data Science in Education Using R text
-dataedu::mass_install()
+### Accessing the Walkthrough Data
+
+You can call the dataset as mentioned in the walkthrough.
+
+``` r
+dataedu::course_data
 ```
 
-One last thing before we close out the chapter! 
-In the above chunks of code we've use
+## Steps for working through new and unfamiliar content
+
+Need to add
